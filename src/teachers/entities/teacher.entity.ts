@@ -4,6 +4,6 @@ export class Teacher implements Prisma.TeacherUncheckedCreateInput {
   id?: string;
   name: string;
   email: string;
-  cpf: number | bigint;
+  cpf: number;
   formation: string;
 }

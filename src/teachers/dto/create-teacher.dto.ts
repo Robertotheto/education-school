@@ -1,4 +1,4 @@
-import { IsEmail, IsEmpty, IsNumber, IsString } from 'class-validator';
+import { IsEmail, IsEmpty, IsInt, IsString } from 'class-validator';
 import { Teacher } from '../entities/teacher.entity';
 
 export class CreateTeacherDto extends Teacher {
@@ -10,9 +10,8 @@ export class CreateTeacherDto extends Teacher {
   @IsEmpty()
   email: string;
 
-  @IsNumber()
-  @IsEmpty()
-  cpf: number | bigint;
+  @IsInt()
+  cpf: number;
 
   @IsString()
   @IsEmpty()
