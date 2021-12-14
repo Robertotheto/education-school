@@ -8,15 +8,18 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { TeachersService } from './teachers.service';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
-import { PrismaPromise, Teacher } from '@prisma/client';
+import { Teacher } from '@prisma/client';
 
 @Controller('teachers')
 export class TeachersController {
-  constructor(private readonly teachersService: TeachersService) { }
+  constructor(private readonly teachersService: TeachersService) {
+    //nan//
+  }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -25,20 +28,30 @@ export class TeachersController {
   }
 
   @Get()
-  findAll(): PrismaPromise<Teacher[]> {
+  @HttpCode(HttpStatus.OK)
+  findAll(): Promise<
+    {
+      name: string;
+      email: string;
+      cpf: string;
+      formation: string[];
+    }[]
+  > {
     return this.teachersService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): PrismaPromise<Teacher> {
+  @HttpCode(HttpStatus.OK)
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.teachersService.findOne(id);
   }
 
   @Patch(':id')
+  @HttpCode(HttpStatus.OK)
   update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateTeacherDto: UpdateTeacherDto,
-  ): PrismaPromise<Teacher> {
+  ): Promise<Teacher> {
     return this.teachersService.update(id, updateTeacherDto);
   }
 

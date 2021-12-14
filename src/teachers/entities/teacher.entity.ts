@@ -4,6 +4,7 @@ export class Teacher implements Prisma.TeacherUncheckedCreateInput {
   id?: string;
   name: string;
   email: string;
-  cpf: number;
-  formation: string;
+  password: string;
+  cpf: string;
+  formation: Prisma.TeacherCreateformationInput | Prisma.Enumerable<string>;
 }
