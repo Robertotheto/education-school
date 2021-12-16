@@ -60,25 +60,34 @@ export class TeachersService {
     }
   }
 
-  async update(id: string, data: UpdateTeacherDto) {
+  async findSigning(email: string) {
     try {
-      const hashPassword = await hash(data.password, 10);
-      const teacher = await this.prisma.teacher.update({
-        where: { id },
-        data: {
-          id: data.id,
-          name: data.name,
-          email: data.email,
-          password: hashPassword,
-          cpf: data.cpf,
-          formation: data.formation,
+      const teacher = await this.prisma.teacher.findUnique({
+        where: { email },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          password: false,
+          cpf: true,
+          formation: true,
         },
       });
-      teacher.password = undefined;
+      if (!teacher) {
+        throw new NotFoundException(`Teacher ${email} not found`);
+      }
       return teacher;
     } catch (error) {
       throw new NotFoundException(error.message, 'Teacher not found');
     }
+  }
+
+  async update(id: string, data: UpdateTeacherDto) {
+    const teacher = await this.prisma.teacher.update({
+      where: { id },
+      data,
+    });
+    return teacher;
   }
 
   remove(id: string) {

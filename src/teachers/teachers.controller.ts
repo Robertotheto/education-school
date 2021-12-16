@@ -42,14 +42,14 @@ export class TeachersController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.teachersService.findOne(id);
   }
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   update(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateTeacherDto: UpdateTeacherDto,
   ): Promise<Teacher> {
     return this.teachersService.update(id, updateTeacherDto);
@@ -57,7 +57,7 @@ export class TeachersController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: string): Promise<void> {
+  async remove(@Param('id', new ParseUUIDPipe()) id: string): Promise<void> {
     await this.teachersService.remove(id);
   }
 }
