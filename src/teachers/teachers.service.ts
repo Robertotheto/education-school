@@ -60,28 +60,6 @@ export class TeachersService {
     }
   }
 
-  async findSigning(email: string) {
-    try {
-      const teacher = await this.prisma.teacher.findUnique({
-        where: { email },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          password: false,
-          cpf: true,
-          formation: true,
-        },
-      });
-      if (!teacher) {
-        throw new NotFoundException(`Teacher ${email} not found`);
-      }
-      return teacher;
-    } catch (error) {
-      throw new NotFoundException(error.message, 'Teacher not found');
-    }
-  }
-
   async update(id: string, data: UpdateTeacherDto) {
     const teacher = await this.prisma.teacher.update({
       where: { id },

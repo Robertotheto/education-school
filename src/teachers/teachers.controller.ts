@@ -9,11 +9,13 @@ import {
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { TeachersService } from './teachers.service';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
 import { Teacher } from '@prisma/client';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('teachers')
 export class TeachersController {
@@ -41,12 +43,14 @@ export class TeachersController {
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.teachersService.findOne(id);
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
   update(
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -56,6 +60,7 @@ export class TeachersController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', new ParseUUIDPipe()) id: string): Promise<void> {
     await this.teachersService.remove(id);
