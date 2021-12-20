@@ -15,8 +15,8 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {
     //nan//
   }
-  @UseGuards(AuthGuard('local'))
   @Post('login')
+  @UseGuards(AuthGuard('local'))
   @HttpCode(HttpStatus.OK)
   async login(@Body() { email, password }: LoginDto) {
     return this.authService.login(email, password);

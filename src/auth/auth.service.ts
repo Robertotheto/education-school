@@ -3,7 +3,6 @@ import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Teacher } from 'src/teachers/entities/teacher.entity';
-import { Auth } from './entities/auth.entity';
 
 @Injectable()
 export class AuthService {
@@ -13,10 +12,13 @@ export class AuthService {
   ) {
     //nan//
   }
-  async validateTeacherLocal(email: string, password: string) {
+  async validateTeacherLocal(
+    email: string,
+    password: string,
+  ): Promise<Teacher> {
     let teacher: Teacher;
     try {
-      teacher = await this.prisma.teacher.findUnique({
+      teacher = await this.prisma.teacher.findFirst({
         where: {
           email,
         },
@@ -31,19 +33,33 @@ export class AuthService {
     if (!isPasswordValid) return null;
     return teacher;
   }
-  async validateTeacher(teacherId: string) {
-    return await this.prisma.teacher.findUnique({
+  async validateTeacher(teacherId: string): Promise<Teacher> {
+    return await this.prisma.teacher.findFirst({
       where: {
         id: teacherId,
       },
     });
   }
-  async login(email: string, password: string): Promise<Auth> {
+  async login(
+    email: string,
+    password: string,
+  ): Promise<{
+    accessToken: string;
+    teacher: Teacher;
+  }> {
     let teacher: Teacher;
     try {
       teacher = await this.prisma.teacher.findUnique({
         where: {
           email,
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          cpf: true,
+          password: true,
+          formation: true,
         },
       });
       if (!teacher.email) {
@@ -54,8 +70,10 @@ export class AuthService {
     }
     const isPasswordValid = compareSync(password, teacher.password);
     if (!isPasswordValid) return null;
+    teacher.password = undefined;
     return {
       accessToken: this.jwtService.sign({ teacherId: teacher.id }),
+      teacher,
     };
   }
 }
