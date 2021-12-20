@@ -65,6 +65,7 @@ export class StudentsService {
       where: { id },
       data,
     });
+    student.password = undefined;
     return student;
   }
 
