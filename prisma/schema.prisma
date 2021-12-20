@@ -18,3 +18,14 @@ model Teacher {
   cpf       String
   formation String[]
 }
+
+model Student {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  cpf       String
+  formation String[]
+
+  @@map("students")
+}
